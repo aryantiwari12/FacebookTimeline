@@ -68,3 +68,7 @@ h4.centered {
 .col-sm-4.text-center.p-2 {
   margin-top: -10px;
 }
+
+h6.text-start {
+  margin-left: 85px;
+}

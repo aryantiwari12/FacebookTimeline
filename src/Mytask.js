@@ -1,20 +1,26 @@
 import axios from "axios";
 import IMAGEE from "./img/1.jpg";
 import IMAGEE1 from "./img/2.png";
+import React from "react";
 import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
 import Axios from "axios";
-import _ from 'lodash';
+// import _ from 'lodash';
 // import Pagination from "./Pagization";
 
 
-const pagesize=10;
+// const pagesize=10;
 export default function Mytask() {
+  
   const [file, setFile] = useState(null);
   const [name, setname] = useState("");
   const [data, setdata] = useState([]);
-  const [paginated,setpaginated]=useState()
-  // const [post,setpost]=useState(" ")
-  const [currentPage, setCurrentPage] = useState(1);
+  const [date,setdate]=useState(dateFormat);
+  // const [paginated,setpaginated]=useState()
+  // // const [post,setpost]=useState(" ")
+  // const [currentPage, setCurrentPage] = useState(1);
+  const [slectedDate, setSlectedDate] = useState(null);
   // const [postsPerPage] = useState(6);
 
   // const [background,setbackground]=useState("")
@@ -38,38 +44,50 @@ export default function Mytask() {
         .post("http://139.59.47.49:4004/api/post", {
           post: name,
           background: response.data.filename,
+          
+          
         })
         .then((res) => {
           console.log(res);
         });
-    });
-  }
+      });
+   }
   useEffect(() => {
+    
     axios
-      .get("http://139.59.47.49:4004/api/posts?limit=20&start=1&orderby=0")
+      .get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&orderby=0`)
       .then((resp) => {
         setdata(resp.data);
-        setpaginated(_(resp.data).slice(0).take(pagesize).value())
+        
+        
+        // setpaginated(_(resp.data).slice(0).take(pagesize).value())
         console.log(resp);
       });
   }, []);
 
-  const pagecount=data?Math.ceil(data.length/pagesize):0;
-  if(pagecount===1) return null;
-  const pages=_.range(1,pagecount+1);
+  
+  // const pagecount=data?Math.ceil(data.length/pagesize):0;
+  // if(pagecount===1) return null;
+  // const pages=_.range(1,pagecount+1);
   //get  current posts
   // const indexOfLastPost = currentPage * postsPerPage;
   // const indexOfFirstPost = indexOfLastPost - postsPerPage;
   // const currentPosts = data.slice(indexOfFirstPost, indexOfLastPost);
 
-   const pagination=(pageNo)=>{
-     setCurrentPage(pageNo);
-     const startindex=(pageNo-1)*pagesize;
-     const pagizatedpost=_(data).slice(startindex).take(pagesize).value();
-     setpaginated(pagizatedpost)
-   }
+  //  const pagination=(pageNo)=>{
+  //    setCurrentPage(pageNo);
+  //    const startindex=(pageNo-1)*pagesize;
+  //    const pagizatedpost=_(data).slice(startindex).take(pagesize).value();
+  //    setpaginated(pagizatedpost)
+  //  }
     
-
+  const api=()=>{
+    axios.get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&date=${date}&orderby=0`)
+    .then((resp)=>{
+      setdate(resp.date)
+      console.log(resp)
+    })
+  }
 
   return (
     <div className="container shadow p-3 mb-5 bg-body rounded rounded p-2">
@@ -146,6 +164,7 @@ export default function Mytask() {
                     <button
                       type="button"
                       onClick={onupload}
+                      
                       class="btn btn-success w-100"
                       data-bs-dismiss="modal"
                     >
@@ -188,6 +207,7 @@ export default function Mytask() {
                       type="button"
                       class="btn-close"
                       data-bs-dismiss="modal"
+                      
                       aria-label="Close"
                     ></button>
                   </div>
@@ -197,7 +217,18 @@ export default function Mytask() {
                       <p>This will not effect how other see your Timeline</p>
                       <span>
                         Go To:
-                        <input type="date" />
+                        {/* <input type="date"  /> */}
+                        <DatePicker 
+                        placeholderText={new Date()}
+                        selected={slectedDate} 
+                        onChange={Date=>setSlectedDate(Date)}
+                        dateFormat="yyyy/MM/ dd"
+                        maxDate={new Date()}
+                        filterDate={(Date) => Date.getDay()}
+                        isClearable
+                        showYearDropdown
+                        scrollableMonthYearDropdown
+                        />
                       </span>
                     </div>
                   </div>
@@ -205,7 +236,10 @@ export default function Mytask() {
                     <button
                       type="button"
                       class="btn btn-secondary w-100"
-                      data-bs-dismiss="modal"
+                      data-bs-dismiss="modal" 
+                      // onClick={() =>{`http://139.59.47.49:4004/api/posts?limit=10&start=1&date=${date}&orderby=0`}}
+                      //  onClick={`http://139.59.47.49:4004/api/posts?limit=10&start=1&date=${date}&orderby=0`}
+                       onClick={api}
                     >
                       Done
                     </button>
@@ -229,6 +263,7 @@ export default function Mytask() {
                 <h1>...</h1>
               </div>
             </div>
+            <h6 class="text-start">{res.data}</h6>
             <h4 className="centered">{res.post}</h4>
             <img
               src={`http://139.59.47.49:4004/api/profile_image?profile_image=${res.background}`}
@@ -242,7 +277,7 @@ export default function Mytask() {
         );
       })}
          
-         <nav>
+         {/* <nav>
            <ul class="pagination justify-content-center">
           
            {
@@ -261,7 +296,7 @@ export default function Mytask() {
             <a class="page-link" href="!#">Next</a>
            </li>
           </ul>
-</nav>
+</nav> */}
 
 
 
