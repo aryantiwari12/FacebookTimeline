@@ -5,7 +5,10 @@ import React from "react";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
-import Axios from "axios";
+// import Moment from 'moment';
+
+
+
 // import _ from 'lodash';
 // import Pagination from "./Pagization";
 
@@ -15,12 +18,13 @@ export default function Mytask() {
   
   const [file, setFile] = useState(null);
   const [name, setname] = useState("");
-  const [data, setdata] = useState([]);
-  const [date,setdate]=useState(dateFormat);
+  // const [data, setdata] = useState([]);
+  
+  
   // const [paginated,setpaginated]=useState()
   // // const [post,setpost]=useState(" ")
   // const [currentPage, setCurrentPage] = useState(1);
-  const [slectedDate, setSlectedDate] = useState(null);
+  const [slectedDate, setSlectedDate] = useState();
   // const [postsPerPage] = useState(6);
 
   // const [background,setbackground]=useState("")
@@ -29,7 +33,8 @@ export default function Mytask() {
 
   // const items={username,post,background};
 
-  function onupload(e) {
+  
+ function onupload(e) {
     const url = "http://139.59.47.49:4004/api/upload/image";
     const formData = new FormData();
     formData.append("file", file);
@@ -38,12 +43,15 @@ export default function Mytask() {
         "content-type": "multipart/form-data",
       },
     };
-    axios.post(url, formData, config).then((response) => {
+   
+    
+   axios.post(url, formData, config).then((response) => {
       console.log(response);
       axios
         .post("http://139.59.47.49:4004/api/post", {
           post: name,
           background: response.data.filename,
+          
           
           
         })
@@ -52,8 +60,9 @@ export default function Mytask() {
         });
       });
    }
+   const [data, setdata] = useState([]);
   useEffect(() => {
-    
+    // const [data, setdata] = useState([]);
     axios
       .get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&orderby=0`)
       .then((resp) => {
@@ -82,11 +91,12 @@ export default function Mytask() {
   //  }
     
   const api=()=>{
-    axios.get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&date=${date}&orderby=0`)
+    axios.get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&date=${slectedDate}&orderby=0`)
     .then((resp)=>{
-      setdate(resp.date)
+      // const formatDate = Moment().format('DD-MM-YYYY')
+      // created_at.split('T')
       console.log(resp)
-    })
+    },[])
   }
 
   return (
@@ -222,7 +232,7 @@ export default function Mytask() {
                         placeholderText={new Date()}
                         selected={slectedDate} 
                         onChange={Date=>setSlectedDate(Date)}
-                        dateFormat="yyyy/MM/ dd"
+                        dateFormat="yyyy-MM-dd"
                         maxDate={new Date()}
                         filterDate={(Date) => Date.getDay()}
                         isClearable
@@ -263,7 +273,7 @@ export default function Mytask() {
                 <h1>...</h1>
               </div>
             </div>
-            <h6 class="text-start">{res.data}</h6>
+            <h6 class="text-start">{res.created_at}</h6>
             <h4 className="centered">{res.post}</h4>
             <img
               src={`http://139.59.47.49:4004/api/profile_image?profile_image=${res.background}`}
