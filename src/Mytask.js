@@ -89,9 +89,21 @@ export default function Mytask() {
   //    const pagizatedpost=_(data).slice(startindex).take(pagesize).value();
   //    setpaginated(pagizatedpost)
   //  }
-    
+  const formatDate=(date)=> {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
   const api=()=>{
-    axios.get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&date=${slectedDate}&orderby=0`)
+    axios.get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&date=${formatDate(slectedDate)}&orderby=0`)
     .then((resp)=>{
       // const formatDate = Moment().format('DD-MM-YYYY')
       // created_at.split('T')
