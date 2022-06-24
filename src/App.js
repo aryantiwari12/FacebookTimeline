@@ -5,7 +5,7 @@ import Mytask from './Mytask';
 function App() {
   return (
     <div className="App">
-      <Mytask/>
+      <Mytask />
       
     </div>
   );
