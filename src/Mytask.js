@@ -73,20 +73,58 @@ export default function Mytask() {
     axios.delete(`http://139.59.47.49:4004/api/post/delete/${id}`)
     .then(res=>{
       console.log(res);  
+      alert(id)
         console.log(res.data);
     })
   }
 
-  function updateuser(){
-    axios.put('http://139.59.47.49:4004/api/post',{
-      id:0,
-      post:name,
-      background:"nsjb"
-    }).then(res=>{
-      console.log(res.data)
-    })
-    
+  // const [id, setid] = useState(null);
+
+  const updateuser=(id)=>{
+    const link="http://139.59.47.49:4004/api/upload/image";
+    const formData = new FormData();
+    formData.append("file", file);
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+   axios.post(link,formData,config).then((response)=>{
+     console.log(response);
+     axios.put(`http://139.59.47.49:4004/api/post`,{
+       id:id,
+       post:name,
+       background:response.data.filename
+     })
+     .then((res)=>{
+       console.log(res);
+     })
+   })
+
   }
+  
+  
+  // const updateuser=(id)=>{
+    
+  //   axios.put(`http://139.59.47.49:4004/api/post`,{
+  //     id:id,
+  //     post:name,
+  //     background:filename
+  //   }).then(res=>{
+  //     console.log(res.data)
+  //   })
+
+  // }
+  // const updateuser = async (id) => {
+  //   let res = await axios.put(`http://139.59.47.49:4004/api/post`, {
+  //       id: id,
+  //       background:"jbb",
+  //       post:name
+  //   })
+//   useEffect(() => {
+    
+//     setid({id})
+// }, [])
 
   return (
     <div className="container shadow p-3 mb-5 bg-body rounded rounded p-2">
@@ -245,6 +283,9 @@ export default function Mytask() {
           </div>
         </div>
       </div>
+       
+      
+
 
       {data.map((res) => {
 
@@ -262,17 +303,40 @@ export default function Mytask() {
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title text-danger" id="exampleModalLabel">CRUD operation</h5>
+                        <h5 class="modal-title text-danger" id="exampleModalLabel1">CRUD operation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                      <button type="button" class="btn btn-primary" onClick={()=>updateuser(res.data)} >Update</button>
-                      {/* <button type="button" class="btn btn-success p-2">Edit</button> */}
-                      <button type="button" class="btn btn-danger" onClick={()=>deleteUser(res.id)}>Delete</button>
-                      </div>
+                      <div id="image-upload" class="shadow  bg-body rounded">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setname(e.target.value)}
+                        class="text-center"
+                      />
+                      <img
+                        src={file ? URL.createObjectURL(file) : ""}
+                        class="w-100 h-100 border-0 text-dark"
+                        alt=""
+                      />
+
+                    </div>
+                    <input
+                      type="file"
+                      onChange={(e) => setFile(e.target.files[0])}
+                      id="input-image"
+                      accept="image/*"
+                      class="btn btn-success w-25"
+                    />
+                     <button type="button" class="btn btn-success" onClick={()=>updateuser(res.id)}>update</button>
+                     
+                     <button type="button" class="btn btn-danger" onClick={()=>deleteUser(res.id)}>Delete</button>
+                    </div>
+                     
+                      
                       <div class="modal-footer">
                         
-                        <button type="button" class="btn btn-primary w-100">Cancel</button>
+                        <button type="button" class="btn btn-primary w-100" >Done</button>
 
                       </div>
                     </div>
@@ -298,11 +362,10 @@ export default function Mytask() {
       })}
 
 
+     
 
 
-
-
-
-    </div>
+</div>
+    
   );
-}
+    }
