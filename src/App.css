@@ -76,12 +76,17 @@ input.www {
   width: 20px;
 }
 hr.color12 {
-  width: 85px;
-  /* margin-right: 28px; */
-  margin-left: 497px;
-  margin-top: 10px;
-  
-  position: absolute;
-  border-radius: 7px;
-  border: 3px solid #17a2b8;
+    width: 119px;
+    margin-right: 28px;
+    margin-left: 479px;
+    margin-top: 13px;
+    position: absolute;
+    border-radius: 4px;
+    border: 0px solid #142de3;
+    background: #436efd;
+    opacity: 1;
+}
+.boxx{
+  box-decoration-break: slice;
+  /* background-color: white; */
 }

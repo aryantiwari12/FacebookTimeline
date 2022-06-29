@@ -6,69 +6,58 @@ import React from "react";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css";
-// import Pages from "./components/Pages";
 
 
+
+const API_ROOT="http://139.59.47.49:4004"; // MAIN ROOT API
 
 export default function Mytask() {
 
   const [file, setFile] = useState(null);
   const [name, setname] = useState("");
   const [slectedDate, setSlectedDate] = useState();
-  // const [currentPage,setCurrentpage]=useState(1);
-  // const [postperpage,setPostperpage]=useState(5);
+ 
 
-  
 
   function onupload(e) {
-    const url = "http://139.59.47.49:4004/api/upload/image";
+    const url = `${API_ROOT}/api/upload/image`;
     const formData = new FormData();
     formData.append("file", file);
     const config = {
       headers: {
         "content-type": "multipart/form-data",
       },
-      
-      
+
+
     };
 
 
     axios.post(url, formData, config).then((response) => {
       console.log(response);
       axios
-        .post("http://139.59.47.49:4004/api/post", {
+      
+        .post(`${API_ROOT}/api/post`, {   
           post: name,
           background: response.data.filename,
-          
-
-
         })
         .then((res) => {
           console.log(res);
-          
+
         });
     });
   }
   const [data, setdata] = useState([]);
-  // const indexOfLastpost=currentPage*postperpage;
-  // const indexfirstpost=indexOfLastpost-postperpage;
-  // const currentPosts=data.slice(indexfirstpost,indexOfLastpost);
-
-
-  function getuser(){
-    axios.get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&orderby=0${slectedDate ? `&date=${formatDate(slectedDate)}` : ''}`)
-    .then((resp) => {
-      setdata(resp.data);
-    });
+ 
+  function getuser() {
+    axios.get(`${API_ROOT}/api/posts?limit=10&start=1&orderby=0${slectedDate ? `&date=${formatDate(slectedDate)}` : ''}`)
+      .then((resp) => {
+        setdata(resp.data);
+      });
   }
 
   useEffect(() => {
     getuser()
-    // axios
-    //   .get(`http://139.59.47.49:4004/api/posts?limit=10&start=1&orderby=0${slectedDate ? `&date=${formatDate(slectedDate)}` : ''}`)
-    //   .then((resp) => {
-    //     setdata(resp.data);
-    //   });
+  
   }, [slectedDate]);
 
   const formatDate = (date) => {
@@ -84,52 +73,40 @@ export default function Mytask() {
 
     return [year, month, day].join('-');
   }
-
-  
-
- 
-      const DeleteUser=(id)=>{
-      axios.delete(`http://139.59.47.49:4004/api/post/delete/${id}`)
-    .then(res=>{
-      console.log(res);  
-      getuser()
+const DeleteUser = (id) => {
+    axios.delete(`${API_ROOT}/api/post/delete/${id}`)
+      .then(res => {
+        console.log(res);
+        getuser()
         console.log(data);
-    })
+      })
   }
-
-  // const [id, setid] = useState(null);
-
-  const updateuser=(id)=>{
-    const link="http://139.59.47.49:4004/api/upload/image";
+const updateuser = (id) => {
+    const link = `${API_ROOT}/api/upload/image`;
     const formData = new FormData();
     formData.append("file", file);
-    
+
     const config = {
       headers: {
         "content-type": "multipart/form-data",
       },
     };
-    axios.post(link,formData,config).then((response)=>{
-     console.log(response);
-      axios.put(`http://139.59.47.49:4004/api/post`,{
-       id:id,
-       post:name,
-       background:response.data.filename
-     })
-     .then((res)=>{
-       console.log(res);
-       getuser()
-     })
-   })
-
-   
-
+    axios.post(link, formData, config).then((response) => {
+      console.log(response);
+      axios.put(`${API_ROOT}/api/post`, {
+        id: id,
+        post: name,
+        background: response.data.filename
+      })
+        .then((res) => {
+          console.log(res);
+          getuser()
+        })
+    })
   }
-  // function RefreshPage(){
-  //   window.location.reload(2);
-  //  }
+ 
   return (
-    
+
     <div className="container shadow p-3 mb-5 bg-body rounded rounded p-2">
       <div class="card mb-3">
         <img src={IMAGEE} class="card-img-top " height={250} alt="..." />
@@ -138,7 +115,7 @@ export default function Mytask() {
           <h3>Jurry Luis </h3>
           <hr />
           <h4 class="text-primary">Timeline</h4>
-          <hr class="color12" size="5"/>
+          <hr class="color12" size="5" />
         </div>
       </div>
       <div class="container shadow p-3 mb-5 bg-body rounded bg-white">
@@ -147,7 +124,7 @@ export default function Mytask() {
             <img src={IMAGEE1} width={50} alt="" />
           </div>
           <div class="col-sm-8 text-end">
-            <input style={{backgroundColor:"#eeeee4"}}
+            <input style={{ backgroundColor: "#eeeee4" }}
               type="text"
               class="form-control rounded-pill"
               data-bs-toggle="modal"
@@ -181,7 +158,7 @@ export default function Mytask() {
                       <span className="p-2">Jurry Luis</span>
                     </div>
                     <div id="image-upload" class="shadow  bg-body rounded">
-                      <input 
+                      <input
                         type="text"
                         value={name}
                         onChange={(e) => setname(e.target.value)}
@@ -224,7 +201,7 @@ export default function Mytask() {
             <h1>Posts</h1>
           </div>
           <div className="col-sm-8 p-2 text-end">
-            <button style={{backgroundColor:"#eeeee4"}}
+            <button style={{ backgroundColor: "#eeeee4" }}
               class="btn  text-black"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
@@ -286,14 +263,11 @@ export default function Mytask() {
             </div>
           </div>
         </div>
-       
+
       </div>
       {data.map((res) => {
-
-
-      
-        return (
-
+         
+         return (
           <div className="container shadow p-3 mb-5 bg-body rounded text-start mt-5 bg-white">
             <div className="row">
               <div className="col-sm-4 text-center p-2" id="page">
@@ -310,38 +284,32 @@ export default function Mytask() {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                      <div id="image-upload" class="shadow  bg-body rounded">
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setname(e.target.value)}
-                        class="text-center"
-                      />
-                      <img
-                        src={file ? URL.createObjectURL(file) : ""}
-                        class="w-100 h-100 border-0 text-dark"
-                        alt=""
-                      />
+                        <div id="image-upload" class="shadow  bg-body rounded">
+                          <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setname(e.target.value)}
+                            class="text-center"
+                          />
+                          <img
+                            src={file ? URL.createObjectURL(file) : ""}
+                            class="w-100 h-100 border-0 text-dark"
+                            alt=""
+                          />
 
-                    </div>
-                    <input
-                      type="file"
-                      onChange={(e) => setFile(e.target.files[0])}
-                      id="input-image"
-                      accept="image/*"
-                      class="btn btn-secondary w-25 float-start mt-2"
-                    />
-                     <button type="button" class="btn btn-success mt-2 m-2" onClick={(e) => { e.preventDefault();updateuser(res.id) }}>update</button>
-                     
-                     <button type="button" class="btn btn-danger mt-2 m-2" onClick={()=>DeleteUser(res.id)}>Delete</button>
-                    </div>
-                     
-                      
+                        </div>
+                        <input
+                          type="file"
+                          onChange={(e) => setFile(e.target.files[0])}
+                          id="input-image"
+                          accept="image/*"
+                          class="btn btn-secondary w-25 float-start mt-2"
+                        />
+                        <button type="button" class="btn btn-success mt-2 m-2" onClick={(e) => { e.preventDefault(); updateuser(res.id) }}>update</button>
+                        <button type="button" class="btn btn-danger mt-2 m-2" onClick={() => DeleteUser(res.id)}>Delete</button>
+                      </div>
                       <div class="modal-footer">
-                        
-                        <button type="button" class="btn btn-primary  w-100" aria-label="Close"  data-bs-dismiss="modal" >Done</button>
-                        
-                        
+                       <button type="button" class="btn btn-primary  w-100" aria-label="Close" data-bs-dismiss="modal" >Done</button>
                       </div>
                     </div>
                   </div>
@@ -349,31 +317,17 @@ export default function Mytask() {
               </div>
             </div>
             <h6 class="text-start">{formatDate(res.created_at)}</h6>
-
-            <h4 className="centered">{res.post}</h4>
+           <h4 class="centered text-center  w-25"><span class="boxx bg-white p-1">{res.post}</span></h4>
             <img
-              src={`http://139.59.47.49:4004/api/profile_image?profile_image=${res.background}`}
+              src={`${API_ROOT}/api/profile_image?profile_image=${res.background}`}
               class="w-100 rounded p-2"
               height={250}
               alt=""
-
-              
-
             />
           </div>
-             
         );
-      
       })}
-    
-     {/* {
-       data.length > 0 ? <Pages data={data}/> : <p>Loading...</p>
-     } */}
-     
-
-
-</div>
-    
+    </div>
   );
-    }
-    
+}
+
