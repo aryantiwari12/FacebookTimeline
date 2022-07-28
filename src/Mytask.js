@@ -34,9 +34,7 @@ export default function Mytask() {
 
     axios.post(url, formData, config).then((response) => {
       console.log(response);
-      axios
-      
-        .post(`${API_ROOT}/api/post`, {   
+      axios.post(`${API_ROOT}/api/post`, {   
           post: name,
           background: response.data.filename,
         })
